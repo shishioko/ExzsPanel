@@ -454,15 +454,15 @@
         }
     </style>
     <script>
-        function racist(pornhub){
-            window.location.href=pornhub;
+        function weew(leel){
+            window.location.href=leel;
         }
         function addselector(you,suck,eZZd){                                          
             eZ = document.createElement("span");
             if(you){you="selection_on";}else{you="selection_off";}
             eZ.id=you;
             eZ.innerText=suck;
-            eZ.setAttribute("onclick","racist(\""+eZZd+"\")")
+            eZ.setAttribute("onclick","weew(\""+eZZd+"\")")
             get=document.createElement("span");
             get.id="selection_split";
             if(typeof REKT =='undefined'){REKT=false}else{}
