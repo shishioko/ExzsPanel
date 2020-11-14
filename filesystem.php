@@ -494,7 +494,7 @@
 
     </script>
 </head>
-<body onload="addselector(false,'Panel','?Mode=panel&Auth=<?php print($_GET["Auth"]); ?>');addselector(true,'FS','?Mode=fs&Auth=<?php print($_GET["Auth"]); ?>');opath='';v=0;path='';cospath=[];ccos=cos;iso(cos,'cose');ezh=false;wa=false;refreshdirs();skr()">
+<body onload="addselector(false,'Panel','?Mode=panel&Auth=<?php print($_GET["Auth"]); ?>');addselector(true,'FS','?Mode=fs&Auth=<?php print($_GET["Auth"]); ?>');addselector(false,'Github','https://github.com/xPopbobx/ExzsPanel');opath='';v=0;path='';cospath=[];ccos=cos;iso(cos,'cose');ezh=false;wa=false;refreshdirs();skr()">
 <header>
     <iframe name="Target1" width="0" height="0" style="display: none"></iframe>
 </header>

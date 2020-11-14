@@ -327,7 +327,7 @@ window.mineParse = function initParser(input) {
 }());
     </script>
     </head>
-    <body onload="addselector(true,'Panel','?Mode=panel&Auth=<?php print($_GET["Auth"]); ?>');addselector(false,'FS','?Mode=fs&Auth=<?php print($_GET["Auth"]); ?>');skr();iref();skr2()">
+    <body onload="addselector(true,'Panel','?Mode=panel&Auth=<?php print($_GET["Auth"]); ?>');addselector(false,'FS','?Mode=fs&Auth=<?php print($_GET["Auth"]); ?>');addselector(false,'Github','https://github.com/xPopbobx/ExzsPanel');skr();iref();skr2()">
         <div id="selection"></div>
         <span id="log">
         </span>
