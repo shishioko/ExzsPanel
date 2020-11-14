@@ -1,0 +1,19 @@
+{
+    "Server":{
+        "My SMP":{
+            "Path":"C:/MyServer",
+            "Color":"#1337FF",
+            "Auth":"Password123",
+            "Startfile":"init.cmd",
+            "IP":"127.0.0.1",
+            "PORT":"25565",
+            "TIMEOUT":1,
+            "RCONIP":"127.0.0.1",
+            "RCONPORT":25575,
+            "RCONTIMEOUT":10,
+            "RCONPASSWORD":"1234567890qwertzuiop",
+            "ConsoleRefreshInterval":750,
+            "DefaultColor":"3"
+        }
+    }
+}
