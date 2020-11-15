@@ -7,7 +7,7 @@ if(isset($_GET["Auth"])==false){
         $ad="No file provided";
     }else{
         if(json_decode(file_get_contents(".config.json"),TRUE)["Server"]["My SMP"]["Path"].$_GET['file']==json_decode(file_get_contents(".config.json"),TRUE)["Server"]["My SMP"]["Path"]."/".json_decode(file_get_contents(".config.json"),TRUE)["Server"]["My SMP"]["Startfile"]){
-            $ad="You should not edit Important files";
+            $ad="echo You should not edit Important files";
         }else{         
 if($_GET["Auth"]==json_decode(file_get_contents(".config.json"),TRUE)["Server"]["My SMP"]["Auth"]){
 if(file_exists(json_decode(file_get_contents(".config.json"),TRUE)["Server"]["My SMP"]["Path"].$_GET['file'])==false)

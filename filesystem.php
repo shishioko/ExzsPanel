@@ -1,11 +1,13 @@
 <html onmousedown="onb(event,false)">
 <head>
+    <title>Exzs Panel | FS</title>
     <meta charset="utf8">
     <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Text:wght@900&display=swap" rel="stylesheet">
     <script
         src="https://code.jquery.com/jquery-3.5.1.min.js"
         integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
         crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script>
         $(document).bind("contextmenu", function(e) {
             return false;
@@ -85,6 +87,7 @@
                             console.debug("Failed deleting file/dir")
                         }
                 })
+            refreshdirs()
         }
         function refcospath(cb){
             console.log("d")
@@ -115,27 +118,50 @@
                 cb()
         }
         function mov(ip){
+            if(cpt==false){
             gg=ip.split("/")[ip.split("/").length-1]
-            dd=prompt("Unpack into",gg)
+            dd=prompt("Paste as ",gg)
             if(dd==null||dd==""){
-
             }else{
-            fetch("fsmov.php?Auth=<?php Print($_GET["Auth"]); ?>&file="+encodeURIComponent(ip)+"&to="+encodeURIComponent(path+"/"+dd))
-                .then(respon => respon.text())
-                .then((respon) => {
-                    alert(respon)  
-                    refreshcos(function(){refcospath(function(){refreshdirs()});})
-                    if(debug){
-                            console.debug("Moved file/dir")
-                        }
+                fetch("fscopy.php?Auth=<?php Print($_GET["Auth"]); ?>&file="+encodeURIComponent(ip)+"&to="+encodeURIComponent(path+"/"+dd))
+                    .then(respon => respon.text())
+                    .then((respon) => {
+                        alert(respon)  
+                        refreshcos(function(){refcospath(function(){refreshdirs()});})
+                        if(debug){
+                                console.debug("Moved file/dir")
+                            }
+                        })
+                    .catch(err => {
+                        alert(err+"!")
+                        if(debug){
+                                console.debug("Failed deleting file/dir")
+                            }
                     })
-                .catch(err => {
-                    alert(err+"!")
-                    if(debug){
-                            console.debug("Failed deleting file/dir")
-                        }
-                })
+                }
+            }else{            
+            gg=ip.split("/")[ip.split("/").length-1]
+            dd=prompt("Paste as ",gg)
+            if(dd==null||dd==""){
+            }else{
+                fetch("fsmov.php?Auth=<?php Print($_GET["Auth"]); ?>&file="+encodeURIComponent(ip)+"&to="+encodeURIComponent(path+"/"+dd))
+                    .then(respon => respon.text())
+                    .then((respon) => {
+                        alert(respon)  
+                        refreshcos(function(){refcospath(function(){refreshdirs()});})
+                        if(debug){
+                                console.debug("Moved file/dir")
+                            }
+                        })
+                    .catch(err => {
+                        alert(err+"!")
+                        if(debug){
+                                console.debug("Failed deleting file/dir")
+                            }
+                    })
+                }
             }
+            refreshdirs()
         }
         function uinfomenu(id,isDir,ip,isZip){
             if(isDir){ad="Folder"}else{ad="File"}
@@ -163,21 +189,28 @@
                 eZsl44.setAttribute("type","button")
                 eZsl44.setAttribute("onclick","del(\""+ip+"\")")
                 document.getElementById("infomenu").appendChild(eZsl44);
-                eZslXcc=document.createElement("br");
-                document.getElementById("infomenu").appendChild(eZslXcc);
-                eZsl448=document.createElement("input");
-                eZsl448.setAttribute("value","Download "+ad)
-                eZsl448.setAttribute("type","button")
-                eZsl448.setAttribute("onclick","don(\""+ip+"\")")
-                document.getElementById("infomenu").appendChild(eZsl448);
                 eZslXcc2=document.createElement("br");
                 document.getElementById("infomenu").appendChild(eZslXcc2);
                 eZsl4487=document.createElement("input");
                 eZsl4487.setAttribute("value","Cut "+ad)
                 eZsl4487.setAttribute("type","button")
-                eZsl4487.setAttribute("onclick","clip=\""+ip+"\"")
+                eZsl4487.setAttribute("onclick","clip=\""+ip+"\";cpt=true;refreshdirs()")
                 document.getElementById("infomenu").appendChild(eZsl4487);
+                eZslXcc2a=document.createElement("br");
+                document.getElementById("infomenu").appendChild(eZslXcc2a);
+                eZsl4487a=document.createElement("input");
+                eZsl4487a.setAttribute("value","Copy "+ad)
+                eZsl4487a.setAttribute("type","button")
+                eZsl4487a.setAttribute("onclick","clip=\""+ip+"\";cpt=false;refreshdirs()")
+                document.getElementById("infomenu").appendChild(eZsl4487a);
                 if(isDir==false){
+                    eZslXcc=document.createElement("br");
+                    document.getElementById("infomenu").appendChild(eZslXcc);
+                    eZsl448=document.createElement("input");
+                    eZsl448.setAttribute("value","Download "+ad)
+                    eZsl448.setAttribute("type","button")
+                    eZsl448.setAttribute("onclick","don(\""+ip+"\")")
+                    document.getElementById("infomenu").appendChild(eZsl448);
                     if(isZip){
                         eZslXcc2e=document.createElement("br");
                         document.getElementById("infomenu").appendChild(eZslXcc2e);
@@ -193,7 +226,7 @@
                     document.getElementById("infomenu").appendChild(eZslXcc2e);
                     eZsl44873=document.createElement("input");
                     xccv=ip.split("/")[ip.split("/").length-1]
-                    eZsl44873.setAttribute("value","Unzip "+ad)
+                    eZsl44873.setAttribute("value","Zip "+ad)
                     eZsl44873.setAttribute("type","button")
                     eZsl44873.setAttribute("onclick","zip(\""+ip+"\")")
                     document.getElementById("infomenu").appendChild(eZsl44873);
@@ -224,6 +257,7 @@
                             }
                     })
             }
+            refreshdirs()()
         }
         function zip(ip){
             gg=ip.split("/")[ip.split("/").length-1]
@@ -249,6 +283,7 @@
                             }
                     })
             }
+            refreshdirs()()
         }
         function don(xd){
             fetch("fsfetch.php?Auth=<?php Print($_GET["Auth"]); ?>&file="+encodeURIComponent(xd))
@@ -521,7 +556,6 @@
             eZsl.setAttribute("enctype","multipart/form-data")
             eZsl.setAttribute("action","fsadd.php?Auth=<?php print($_GET["Auth"]);?>&file="+path)
             eZsl.setAttribute("method","POST")
-            eZsl.setAttribute("onsubmit","sus()")
             eZsl.setAttribute("target","Target1")
             document.getElementById("sandbox").appendChild(eZsl);
             eZsl1=document.createElement("input");

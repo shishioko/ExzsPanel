@@ -31,7 +31,7 @@ if($_GET["Auth"]==json_decode(file_get_contents(".config.json"),TRUE)["Server"][
 }else{
     $ad="Access denied";
 }}}}
-if(gettype($mm)=="NULL"){
+if(isset($mm)==false){
     $mg="";
 }else{
     $mg=$mm;
