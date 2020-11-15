@@ -13,7 +13,9 @@
             "RCONTIMEOUT":10,
             "RCONPASSWORD":"1234567890qwertzuiop",
             "ConsoleRefreshInterval":750,
-            "DefaultColor":"3"
+            "DefaultColor":"3",
+            "ActiveFetchFileSize":false,
+            "Debug":true
         }
     }
 }

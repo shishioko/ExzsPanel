@@ -6,12 +6,12 @@ if(isset($_GET["Auth"])==false){
     if(isset($_GET["file"])==false){
         $ad="No file provided";
     }else{
-        if(json_decode(file_get_contents(".config.json"),TRUE)["Server"]["My SMP"]["Path"].urldecode($_GET['file'])==json_decode(file_get_contents(".config.json"),TRUE)["Server"]["My SMP"]["Path"]."/".json_decode(file_get_contents(".config.json"),TRUE)["Server"]["My SMP"]["Startfile"]){
+        if(json_decode(file_get_contents(".config.json"),TRUE)["Server"]["My SMP"]["Path"].$_GET['file']==json_decode(file_get_contents(".config.json"),TRUE)["Server"]["My SMP"]["Path"]."/".json_decode(file_get_contents(".config.json"),TRUE)["Server"]["My SMP"]["Startfile"]){
             $ad="You should not overwrite Important files";
         }else{  
     if($_GET["Auth"]==json_decode(file_get_contents(".config.json"),TRUE)["Server"]["My SMP"]["Auth"]){
     $path1=json_decode(file_get_contents(".config.json"),TRUE)["Server"]["My SMP"]["Path"];
-    $path=json_decode(file_get_contents(".config.json"),TRUE)["Server"]["My SMP"]["Path"]."/".urldecode($_GET["file"]);
+    $path=json_decode(file_get_contents(".config.json"),TRUE)["Server"]["My SMP"]["Path"]."/".$_GET["file"];
     if(substr($path,0,strlen($path1))==$path1){
         if($_FILES['file']['error']=="0"){
             if($_FILES['file']['size']>(1024*1024*1024*2)){

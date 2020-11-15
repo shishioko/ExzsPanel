@@ -57,21 +57,89 @@
             eZslxb=document.createElement("input");
             eZslxb.setAttribute("value","Refresh")
             eZslxb.setAttribute("type","button")
-            eZslxb.setAttribute("onclick","refreshdirs()")
+            eZslxb.setAttribute("onclick","reminfo();refreshdirs()")
             document.getElementById("infomenu").appendChild(eZslxb);
+            if(clip==""){}else{
+                eZslXbu=document.createElement("br");
+                document.getElementById("infomenu").appendChild(eZslXbu);
+                eZslxbuG=document.createElement("input");
+                eZslxbuG.setAttribute("value","Paste")
+                eZslxbuG.setAttribute("type","button")
+                eZslxbuG.setAttribute("onclick","mov(\""+clip+"\");clip=\"\"")
+                document.getElementById("infomenu").appendChild(eZslxbuG);
+            }
         }
         function del(ip){
-            fetch("fsdel.php?Auth=<?php Print($_GET["Auth"]); ?>&file="+ip)
+            fetch("fsdel.php?Auth=<?php Print($_GET["Auth"]); ?>&file="+encodeURIComponent(ip))
                 .then(respon => respon.text())
                 .then((respon) => {
-                    alert(respon)})
+                    alert(respon)
                     refreshdirs()
+                    if(debug){
+                            console.debug("Deleted file/dir")
+                        }
+                    })
                 .catch(err => {
                     alert(err)
+                    if(debug){
+                            console.debug("Failed deleting file/dir")
+                        }
                 })
         }
-        function uinfomenu(id,isDir,ip){
+        function refcospath(cb){
+            console.log("d")
+                    if(path==""){
+                        rpath=[""]
+                    }else{
+                        rpath=path.split("/")
+                    }
+                    rpath.shift()
+                    xos=cos
+                    cospath=[]
+                    rpath.forEach(rp=>{
+                        Object.keys(xos).forEach(function(key){
+                            if(typeof(xos[key]["name"])=="undefined"){}else{      
+                                if(xos[key]["name"]==rp){
+                                    console.log("f")
+                                    xxos=xos[key]["dir"]
+                                    cospath.push(key)
+                                    cospath.push("dir")
+                                    }
+
+                            }
+
+                        })
+                        xos=xxos
+                    })                             
+                ccos=xos
+                cb()
+        }
+        function mov(ip){
+            gg=ip.split("/")[ip.split("/").length-1]
+            dd=prompt("Unpack into",gg)
+            if(dd==null||dd==""){
+
+            }else{
+            fetch("fsmov.php?Auth=<?php Print($_GET["Auth"]); ?>&file="+encodeURIComponent(ip)+"&to="+encodeURIComponent(path+"/"+dd))
+                .then(respon => respon.text())
+                .then((respon) => {
+                    alert(respon)  
+                    refreshcos(function(){refcospath(function(){refreshdirs()});})
+                    if(debug){
+                            console.debug("Moved file/dir")
+                        }
+                    })
+                .catch(err => {
+                    alert(err+"!")
+                    if(debug){
+                            console.debug("Failed deleting file/dir")
+                        }
+                })
+            }
+        }
+        function uinfomenu(id,isDir,ip,isZip){
             if(isDir){ad="Folder"}else{ad="File"}
+            if(ip==null){ad="Folder"}
             men=document.createElement("span");
             men.id="infomenu"
             x = event.clientX;
@@ -87,20 +155,115 @@
             eZsl4.setAttribute("type","button")
             eZsl4.setAttribute("onclick","$(\"#"+id+"\").trigger('click');")
             document.getElementById("infomenu").appendChild(eZsl4);
+            if(ip==null){}else{
             eZslXc=document.createElement("br");
             document.getElementById("infomenu").appendChild(eZslXc);
-            if(ip==null){}else{
                 eZsl44=document.createElement("input");
                 eZsl44.setAttribute("value","Delete "+ad)
                 eZsl44.setAttribute("type","button")
                 eZsl44.setAttribute("onclick","del(\""+ip+"\")")
                 document.getElementById("infomenu").appendChild(eZsl44);
+                eZslXcc=document.createElement("br");
+                document.getElementById("infomenu").appendChild(eZslXcc);
+                eZsl448=document.createElement("input");
+                eZsl448.setAttribute("value","Download "+ad)
+                eZsl448.setAttribute("type","button")
+                eZsl448.setAttribute("onclick","don(\""+ip+"\")")
+                document.getElementById("infomenu").appendChild(eZsl448);
+                eZslXcc2=document.createElement("br");
+                document.getElementById("infomenu").appendChild(eZslXcc2);
+                eZsl4487=document.createElement("input");
+                eZsl4487.setAttribute("value","Cut "+ad)
+                eZsl4487.setAttribute("type","button")
+                eZsl4487.setAttribute("onclick","clip=\""+ip+"\"")
+                document.getElementById("infomenu").appendChild(eZsl4487);
+                if(isDir==false){
+                    if(isZip){
+                        eZslXcc2e=document.createElement("br");
+                        document.getElementById("infomenu").appendChild(eZslXcc2e);
+                        eZsl44873=document.createElement("input");
+                        xccv=ip.split("/")[ip.split("/").length-1]
+                        eZsl44873.setAttribute("value","Unzip "+ad)
+                        eZsl44873.setAttribute("type","button")
+                        eZsl44873.setAttribute("onclick","unzip(\""+ip+"\")")
+                        document.getElementById("infomenu").appendChild(eZsl44873);
+                    }
+                }else{
+                    eZslXcc2e=document.createElement("br");
+                    document.getElementById("infomenu").appendChild(eZslXcc2e);
+                    eZsl44873=document.createElement("input");
+                    xccv=ip.split("/")[ip.split("/").length-1]
+                    eZsl44873.setAttribute("value","Unzip "+ad)
+                    eZsl44873.setAttribute("type","button")
+                    eZsl44873.setAttribute("onclick","zip(\""+ip+"\")")
+                    document.getElementById("infomenu").appendChild(eZsl44873);
+                }
             }
+        }
+        function unzip(ip){
+            gg=ip.split("/")[ip.split("/").length-1]
+            dd=prompt("Unpack into",gg+"-unpacked")
+            if(dd==null||dd==""){
+            }else{   
+                ipx=ip.split("/")
+                ipx.pop()     
+                ipx=ipx.join("/")      
+                fetch("fsunzip.php?Auth=<?php Print($_GET["Auth"]); ?>&file="+encodeURIComponent(ip)+"&to="+encodeURIComponent(ipx+"/"+dd))
+                    .then(respon => respon.text())
+                    .then((respon) => {
+                        alert(respon)  
+                        refreshcos(function(){refcospath(function(){refreshdirs()});})
+                        if(debug){
+                                console.debug("Unpacked file/dir")
+                            }
+                        })
+                    .catch(err => {
+                        alert(err+"!")
+                        if(debug){
+                                console.debug("Failed unpacking file/dir")
+                            }
+                    })
+            }
+        }
+        function zip(ip){
+            gg=ip.split("/")[ip.split("/").length-1]
+            dd=prompt("Pack into",gg+".zip")
+            if(dd==null||dd==""){
+            }else{   
+                ipx=ip.split("/")
+                ipx.pop()     
+                ipx=ipx.join("/")      
+                fetch("fszip.php?Auth=<?php Print($_GET["Auth"]); ?>&file="+encodeURIComponent(ip)+"&to="+encodeURIComponent(ipx+"/"+dd))
+                    .then(respon => respon.text())
+                    .then((respon) => {
+                        alert(respon)  
+                        refreshcos(function(){refcospath(function(){refreshdirs()});})
+                        if(debug){
+                                console.debug("Packed file/dir")
+                            }
+                        })
+                    .catch(err => {
+                        alert(err+"!")
+                        if(debug){
+                                console.debug("Failed packing file/dir")
+                            }
+                    })
+            }
+        }
+        function don(xd){
+            fetch("fsfetch.php?Auth=<?php Print($_GET["Auth"]); ?>&file="+encodeURIComponent(xd))
+                .then(response => response.text())
+                .then((response) => {
+                    download(response,xd.split("/")[xd.split("/").length-1],"text/txt")
+                })
+                .catch(err => {
+                    alert(err)
+                })
         }
         function fi(id){
             document.getElementById("infomenu").innerHTML=document.getElementById(id).innerText
         }
-        function onb(event,isEntry,id,isDir,ip){ 
+        function onb(event,isEntry,id,isDir,ip,isZip){ 
             if(isEntry==true){
                 switch (event.which) {
                     case 1:
@@ -110,7 +273,7 @@
                     case 3:
                         wa=true;
                         reminfo()
-                        uinfomenu(id,isDir,ip)
+                        uinfomenu(id,isDir,ip,isZip)
                         break;
                 } 
             }else{
@@ -134,12 +297,20 @@
             if(okk==null||okk==""){
             }else{
                 okk="/"+okk
-                fetch("fsnew.php?Auth=<?php Print($_GET["Auth"]); ?>&file="+encodeURIComponent(path)+okk)
+                fetch("fsnew.php?Auth=<?php Print($_GET["Auth"]); ?>&file="+encodeURIComponent(path+okk))
                     .then(respon => respon.text())
                     .then((respon) => {
-                        alert(respon)})
+                        alert(respon)
+                        refreshdirs()
+                        if(debug){
+                            console.debug("Created new file")
+                        }
+                        })
                     .catch(err => {
                         alert(err)
+                        if(debug){
+                            console.debug("Failed Creating new file")
+                        }
                     })
                 }
         }
@@ -148,12 +319,20 @@
             if(okk==null||okk==""){
             }else{
                 okk="/"+okk
-                fetch("fsnewdir.php?Auth=<?php Print($_GET["Auth"]); ?>&file="+encodeURIComponent(path)+okk)
+                fetch("fsnewdir.php?Auth=<?php Print($_GET["Auth"]); ?>&file="+encodeURIComponent(path+okk))
                     .then(respon => respon.text())
                     .then((respon) => {
-                        alert(respon)})
+                        alert(respon)
+                        refreshdirs()
+                        if(debug){
+                            console.debug("Created new dir")
+                        }
+                        })
                     .catch(err => {
                         alert(err)
+                        if(debug){
+                            console.debug("Failed Creating new dir")
+                        }
                     })
                 }
         }
@@ -166,8 +345,24 @@
                     .then((respon) => {
                         cos=JSON.parse(respon.slice(0,respon.length-1))
                         ccos=cos
-                        cospath.forEach(cc=>{ccos=ccos[cc]})
+                        cospath.forEach(cc=>{ccos=ccos[cc];console.log(ccos)})        
                         iso(ccos);
+                        if(debug){
+                            console.debug("Files:")
+                        console.debug(cos)
+                        }
+                    })
+                    .catch(err => {
+                        alert(err)
+                    })
+        }
+        function refreshcos(cb){
+            fetch("fsdir.php?Auth=<?php Print($_GET["Auth"]); ?>")
+                    .then(respon => respon.text())
+                    .then((respon) => {
+                        cos=JSON.parse(respon.slice(0,respon.length-1))
+                        ccos=cos
+                        cb()
                     })
                     .catch(err => {
                         alert(err)
@@ -178,6 +373,28 @@
         
         include("fsdir.php")
         ?>;
+        function download(strData, strFileName, strMimeType) {
+            var D = document,
+            a = D.createElement("a");
+            strMimeType= strMimeType || "application/octet-stream";
+            if (navigator.msSaveBlob) {
+                 return navigator.msSaveBlob(new Blob([strData], {type: strMimeType}), strFileName);
+            }
+            if ('download' in a) {
+                a.href = "data:" + strMimeType + "," + encodeURIComponent(strData);
+                a.setAttribute("download", strFileName);
+                a.innerHTML = "downloading...";
+                D.body.appendChild(a);
+                a.click();
+                D.body.removeChild(a);
+                return true;
+            }
+            var f = D.createElement("iframe");
+            D.header.appendChild(f);
+            f.src = "data:" +  strMimeType   + "," + encodeURIComponent(strData);
+            D.body.removeChild(f);
+            return true;
+        }
         function sav(){
             if(document.getElementById("lel").readOnly){document.getElementById("lel").value=document.getElementById("lel").value+"\nYou cant save now";}else{
                 if(path=="/<?php print(dir_to_json(json_decode(file_get_contents(".config.json"),TRUE)["Server"]["My SMP"]["Startfile"])); ?>"){
@@ -215,6 +432,10 @@
                 if(path.startsWith("/")){}else{
                 path="/"+path
                 }
+            }
+            if(debug){
+                console.debug("Now editing: "+path)
+                console.debug("In dir: "+opath)
             }
             clrbdy()
             lel=document.createElement("textarea");
@@ -274,16 +495,25 @@
         function ver(){
             if(document.getElementsByName("Target1")[0].contentWindow.document.body.innerText==""){
                 if(v<101){
-                    alert("Loading")
                     setTimeout(function(){v=v+1;ver()},300)
                 }else{
                     alert("Timed out")
+                    if(debug){
+                        console.debug("Failed uploading file")
+                    }
                 }
             }else{     
                 alert(document.getElementsByName("Target1")[0].contentWindow.document.body.innerText)
+                refreshdirs()
+                if(debug){
+                    console.debug("Uploaded file")
+                }
             }
         }
         function iso(cos){
+            if(debug){
+                console.debug("Showing: "+opath)
+            }
             clrbdy()
             if(ccos==null){ccos=cos;}
             eZsl=document.createElement("form");
@@ -291,6 +521,7 @@
             eZsl.setAttribute("enctype","multipart/form-data")
             eZsl.setAttribute("action","fsadd.php?Auth=<?php print($_GET["Auth"]);?>&file="+path)
             eZsl.setAttribute("method","POST")
+            eZsl.setAttribute("onsubmit","sus()")
             eZsl.setAttribute("target","Target1")
             document.getElementById("sandbox").appendChild(eZsl);
             eZsl1=document.createElement("input");
@@ -321,8 +552,9 @@
                     document.getElementById("sandbox").appendChild(eZs);
                     eZ=document.createElement("span");
                     eZ.id=Math.floor(Math.random() * 999999999999); 
+                    console.log(keys+" = "+ccos[keys].name)
                     eZ.setAttribute("onclick","ccos=ccos["+keys+"][\"dir\"];cospath[cospath.length]=\""+keys+"\";cospath[cospath.length]=\"dir\";path=path+\"/"+ccos[keys].name+"\";opath=path;iso(ccos);");
-                    eZ.setAttribute("onmousedown","onb(event,true,"+eZ.id+",true,path+\"/"+ccos[keys].name+"\");");
+                    eZ.setAttribute("onmousedown","onb(event,true,"+eZ.id+",true,path+\"/"+ccos[keys].name+"\",false);");
                     eZ.setAttribute("class","folder");
                     eZ.innerText=ccos[keys].name;
                     document.getElementById("sandbox").appendChild(eZ);
@@ -353,8 +585,18 @@
                     eZ.setAttribute("class","ext_"+ext);
                     eZ.id=Math.floor(Math.random() * 999999999999); 
                     eZ.setAttribute("onclick","opath=path;path=path+\"/"+ccos[keys].file+"\";f=false;d=\"\";cospath.forEach(cc=>{if(!f){f=true;d=d+\"\"+cc}});edut(path);");
-                    eZ.setAttribute("onmousedown","onb(event,true,"+eZ.id+",false,path+\"/"+ccos[keys].file+"\");");
-                    gsiz(opath+"/"+ccos[keys].file,eZ.id)
+                    if(["zip","rar","gz","jar","cab","iso","pak","apk"].indexOf(ext)>(-1)){
+                        isZip=true;
+                    }else{
+                        isZip=false;
+                    }
+                    eZ.setAttribute("onmousedown","onb(event,true,"+eZ.id+",false,path+\"/"+ccos[keys].file+"\","+isZip+");");
+                    <?php 
+                    if(json_decode(file_get_contents(".config.json"),TRUE)["Server"]["My SMP"]["ActiveFetchFileSize"]){
+                        print(";gsiz(opath+\"/\"+ccos[keys].file,eZ.id);");
+                    }
+                    ?>
+                    ///
                     eZ.innerText=ccos[keys].file;
                     document.getElementById("sandbox").appendChild(eZ);
                     eZi=document.createElement("br");
@@ -494,7 +736,7 @@
 
     </script>
 </head>
-<body onload="addselector(false,'Panel','?Mode=panel&Auth=<?php print($_GET["Auth"]); ?>');addselector(true,'FS','?Mode=fs&Auth=<?php print($_GET["Auth"]); ?>');addselector(false,'Github','https://github.com/xPopbobx/ExzsPanel');opath='';v=0;path='';cospath=[];ccos=cos;iso(cos,'cose');ezh=false;wa=false;refreshdirs();skr()">
+<body onload="debug=<?php print(json_decode(file_get_contents(".config.json"),TRUE)["Server"]["My SMP"]["Debug"]); ?>;addselector(false,'Panel','?Mode=panel&Auth=<?php print($_GET["Auth"]); ?>');addselector(true,'FS','?Mode=fs&Auth=<?php print($_GET["Auth"]); ?>');addselector(false,'Github','https://github.com/xPopbobx/ExzsPanel');clip='';opath='';v=0;path='';cospath=[];ccos=cos;iso(cos,'cose');ezh=false;wa=false;refreshdirs();skr()">
 <header>
     <iframe name="Target1" width="0" height="0" style="display: none"></iframe>
 </header>

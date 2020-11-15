@@ -14,7 +14,7 @@
                 $rcon = new Rcon($host, $port, $password, $timeout);
                 if($rcon->connect())
                 {
-                    $rcon->sendCommand(urldecode($_GET["cmd"]));
+                    $rcon->sendCommand($_GET["cmd"]);
                     $adx=$rcon->getResponse();
                     $rcon->disconnect();
                 }
